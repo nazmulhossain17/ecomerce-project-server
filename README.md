@@ -16,5 +16,6 @@ Welcome to the E-commerce Project Server! This server is designed by Syed Nazmul
     cd e-commerce-project-server
 
 3. Install the project dependencies:
+   ```bash
     npm install
 
