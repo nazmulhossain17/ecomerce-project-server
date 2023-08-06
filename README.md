@@ -10,3 +10,11 @@ Welcome to the E-commerce Project Server! This server is designed by Syed Nazmul
 
    ```bash
    git clone https://github.com/nazmulhossain17/ecomerce-project-server.git
+
+2. Navigate to the project directory:
+   ```bash
+    cd e-commerce-project-server
+
+3. Install the project dependencies:
+    npm install
+
