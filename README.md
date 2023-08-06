@@ -9,4 +9,4 @@ Welcome to the E-commerce Project Server! This server is designed by Syed Nazmul
 1. Clone this repository to your local machine:
 
    ```bash
-   https://github.com/nazmulhossain17/ecomerce-project-server.git
+   git clone https://github.com/nazmulhossain17/ecomerce-project-server.git
