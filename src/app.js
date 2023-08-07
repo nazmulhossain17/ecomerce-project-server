@@ -5,6 +5,7 @@ const createError = require('http-errors');
 const xssClean = require("xss");
 const rateLimit = require('express-rate-limit');
 const userRouter = require('./routers/user.router');
+const seedRouter = require("./routers/seed.router");
 const rateLimiter = rateLimit({
     windowMs: 1*60*1000,
     max: 5,
@@ -17,7 +18,8 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}));
 app.use(rateLimiter)
 
-app.use("/", userRouter)
+app.use("/", userRouter);
+app.use("/api/v1/", seedRouter);
 app.get("/", (req, res)=>{
     res.send("Hello")
 })
