@@ -3,7 +3,8 @@ const app = express();
 const morgan = require('morgan');
 const createError = require('http-errors');
 const xssClean = require("xss");
-const rateLimit = require('express-rate-limit')
+const rateLimit = require('express-rate-limit');
+const userRouter = require("../routers/user.router");
 
 const rateLimiter = rateLimit({
     windowMs: 1*60*1000,
@@ -17,15 +18,12 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}));
 app.use(rateLimiter)
 
+app.use("/", userRouter)
 app.get("/", (req, res)=>{
     res.send("Hello")
 })
 
-app.get('/test', (req, res)=>{
-    res.status(200).send({
-        message: 'working'
-    })
-})
+
 
 // Error-handling middleware (404 route not found)
 app.use((req, res, next) => {
