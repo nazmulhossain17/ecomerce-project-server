@@ -4,8 +4,7 @@ const morgan = require('morgan');
 const createError = require('http-errors');
 const xssClean = require("xss");
 const rateLimit = require('express-rate-limit');
-const userRouter = require("../routers/user.router");
-
+const userRouter = require('./routers/user.router');
 const rateLimiter = rateLimit({
     windowMs: 1*60*1000,
     max: 5,
