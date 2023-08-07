@@ -4,10 +4,17 @@ require('dotenv').config()
 const port = 3001;
 const URL = process.env.DB_URL
 
-mongoose.connect(URL).then(() => {
-    console.log('Database Connected!')
-});
 
-app.listen(port, ()=>{
-    console.log(`Server running on PORT ${port}`)
-}) 
+const connectDB = async(req, res)=>{
+    try {
+        await mongoose.connect(URL);
+        console.log('Database Connected!');
+        app.listen(port, ()=>{
+            console.log(`Server running on PORT ${port}`)
+        }) 
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+}
+
+connectDB();
