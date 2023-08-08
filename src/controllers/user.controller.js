@@ -1,4 +1,5 @@
-const User = require("../models/user.model")
+const User = require("../models/user.model");
+const { successResponse } = require("./response.controller");
 
 const testController = (req, res)=>{
     res.status(200).send({
@@ -30,18 +31,20 @@ const getUsers = async(req, res, next)=>{
         if(!users){
             throw new Error(404, 'no user found')
         }
-        res.status(200).send({
-            message: 'Users found',
-            users,
-            pagination: {
+
+        return successResponse(res,{
+            statusCode: 200,
+            message: 'User sucessful returned',
+            payload: {
+                users,
+                pagination: {
                 totalPages: Math.ceil(count / limit),
                 currentPAge: page,
                 previousPage: page - 1 > 0 ? page -1: null,
                 nextPage: page + 1 < Math.ceil(count / limit) ? page + 1: null,
-
-
             }
-        });
+            }
+        })
     } catch (error) {
         next(error)
     }
