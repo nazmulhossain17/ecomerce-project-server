@@ -35,7 +35,7 @@ const userSchema = new Schema({
         required: [true, 'Address is required'],
     },
     phone: {
-        type: Number,
+        type: String,
         validate: {
             validator: function(v) {
               return /^\d{11}$/.test(v);

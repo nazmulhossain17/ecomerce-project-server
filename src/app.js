@@ -26,12 +26,12 @@ app.get("/", (req, res)=>{
 
 
 
-// Error-handling middleware (404 route not found)
+
 app.use((req, res, next) => {
     next(createError(404, 'Route not found'));
 });
 
-// Error-handling middleware (other errors)
+
 app.use((err, req, res, next) => {
     return res.status(err.status || 500).json({
         success: false,
