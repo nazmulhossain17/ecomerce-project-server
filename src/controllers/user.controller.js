@@ -1,5 +1,7 @@
 const User = require("../models/user.model");
+const { findUserId } = require("../services/find-services");
 const { successResponse } = require("./response.controller");
+const mongoose = require('mongoose');
 
 const testController = (req, res)=>{
     res.status(200).send({
@@ -11,7 +13,7 @@ const getUsers = async(req, res, next)=>{
     try {
         const search = req.query.search || '';
         const page = Number(req.query.page) || 1;
-        const limit = Number(req.query.limit) || 2;
+        const limit = Number(req.query.limit) || 5;
 
         const searchRegEx = new RegExp('.*' + search + '.*', 'i');
         const filter = {
@@ -50,5 +52,21 @@ const getUsers = async(req, res, next)=>{
     }
 }
 
+const findUserById = async(req, res, next) =>{
+    try {
+        const id = req.params.id; 
+        const options = {password: 0}
+        const user = await findUserId(id, options)
+        return successResponse(res,{
+            statusCode: 200,
+            message: 'User sucessful returned',
+            payload: {user},
+        });
+    } catch (error) {
+        
+        next(error)
+    }
+}
 
-module.exports = {testController, getUsers}
+
+module.exports = {testController, getUsers, findUserById}
