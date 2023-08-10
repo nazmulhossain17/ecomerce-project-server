@@ -7,6 +7,7 @@ const createError = require("http-errors");
 const { createJSONWebToken } = require("../helper/jsonwebtoken");
 const { jwtKey, clientURL } = require("../config/secret");
 const sendEmailWithNodMailer = require("../helper/email");
+const bcrypt  = require("bcryptjs");
 
 const testController = (req, res)=>{
     res.status(200).send({
@@ -106,34 +107,107 @@ const deleteUser = async(req, res, next) =>{
     }
 }
 
+// const processRegister = async(req, res, next) =>{
+//     try {
+//         const {name, email, password, phone, address} = req.body;
+//         const userExists = await User.exists({email: email});
+//         if(userExists){
+//             throw createError(409, 'User email already exists')
+//         }
+//         const hashedPassword = await bcryptjs.hash(password, 10);
+//         const newUser = new User({
+//             name,
+//             email,
+//             password: hashedPassword,
+//             phone,
+//             address
+//         });
+
+//         await newUser.save();
+//         const emailData = {
+//             email,
+//             subject: 'Active Your Account',
+//             html: `
+//                 <h2>Hello ${name}!!</h2> 
+//                 <p>Click here to <a href="${clientURL}/api/users/activate/${token}" target="_blank">activate your account</a></p> 
+//             `
+//         }
+//         try {
+//             await sendEmailWithNodMailer(emailData)
+//         } catch (emailError) {
+//             next(createError(500, 'Failed to send verification email'))
+//             return;
+//         }
+//         const token = createJSONWebToken({name, email, password, phone, address}, jwtKey, '10m')
+        
+//         return successResponse(res,{
+//             statusCode: 200,
+//             message: `Check your ${email} to complete registration`,
+//             payload: {token}
+//         }); 
+//     } catch (error) {
+        
+//         next(error)
+//     }
+// }
 const processRegister = async(req, res, next) =>{
     try {
-        const {name, email, password, phone, address} = req.body;
-        const userExists = await User.exists({email: email});
-        if(userExists){
-            throw createError(409, 'User email already exists')
+        const { name, email, password, phone, address } = req.body;
+
+        // Check if user already exists
+        const userExists = await User.exists({ email: email });
+        if (userExists) {
+            throw createError(409, 'User email already exists');
         }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create the user
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            phone,
+            address
+        });
+
+        await newUser.save();
+
+        // Generate token after creating the user
+        const token = createJSONWebToken(
+            { name, email, password, phone, address },
+            jwtKey,
+            '10m'
+        );
+
+        // Send verification email
         const emailData = {
             email,
-            subject: 'Active Your Account',
+            subject: 'Activate Your Account',
             html: `
                 <h2>Hello ${name}!!</h2> 
                 <p>Click here to <a href="${clientURL}/api/users/activate/${token}" target="_blank">activate your account</a></p> 
             `
+        };
+        try {
+            await sendEmailWithNodMailer(emailData);
+        } catch (emailError) {
+            throw createError(500, 'Failed to send verification email');
         }
-        sendEmailWithNodMailer(emailData)
-        const token = createJSONWebToken({name, email, password, phone, address}, jwtKey, '10m')
-        
+
+        // Respond with success message
         return successResponse(res,{
-            statusCode: 200,
-            message: 'User created sucessful',
-            payload: {token}
-        }); 
+                        statusCode: 200,
+                        message: `Check your ${email} to complete registration`,
+                        payload: {token}
+                    }); 
     } catch (error) {
-        
-        next(error)
+        next(error);
     }
 }
+
+
 
 
 module.exports = {processRegister, testController, getUsers, findUserById, deleteUser}
