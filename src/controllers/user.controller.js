@@ -2,12 +2,12 @@ const User = require("../models/user.model");
 const fs = require("fs")
 const { findUserId } = require("../services/find-services");
 const { successResponse } = require("./response.controller");
-const mongoose = require('mongoose');
 const createError = require("http-errors");
 const { createJSONWebToken } = require("../helper/jsonwebtoken");
 const { jwtKey, clientURL } = require("../config/secret");
 const sendEmailWithNodMailer = require("../helper/email");
 const bcrypt  = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const testController = (req, res)=>{
     res.status(200).send({
@@ -107,49 +107,6 @@ const deleteUser = async(req, res, next) =>{
     }
 }
 
-// const processRegister = async(req, res, next) =>{
-//     try {
-//         const {name, email, password, phone, address} = req.body;
-//         const userExists = await User.exists({email: email});
-//         if(userExists){
-//             throw createError(409, 'User email already exists')
-//         }
-//         const hashedPassword = await bcryptjs.hash(password, 10);
-//         const newUser = new User({
-//             name,
-//             email,
-//             password: hashedPassword,
-//             phone,
-//             address
-//         });
-
-//         await newUser.save();
-//         const emailData = {
-//             email,
-//             subject: 'Active Your Account',
-//             html: `
-//                 <h2>Hello ${name}!!</h2> 
-//                 <p>Click here to <a href="${clientURL}/api/users/activate/${token}" target="_blank">activate your account</a></p> 
-//             `
-//         }
-//         try {
-//             await sendEmailWithNodMailer(emailData)
-//         } catch (emailError) {
-//             next(createError(500, 'Failed to send verification email'))
-//             return;
-//         }
-//         const token = createJSONWebToken({name, email, password, phone, address}, jwtKey, '10m')
-        
-//         return successResponse(res,{
-//             statusCode: 200,
-//             message: `Check your ${email} to complete registration`,
-//             payload: {token}
-//         }); 
-//     } catch (error) {
-        
-//         next(error)
-//     }
-// }
 const processRegister = async(req, res, next) =>{
     try {
         const { name, email, password, phone, address } = req.body;
@@ -206,8 +163,24 @@ const processRegister = async(req, res, next) =>{
         next(error);
     }
 }
+ 
+const activateUserAccount = async(req, res, next) =>{
+    try {
+        const token = req.body.token;
+        if(!token){
+            throw createError(404, 'Token not found')
+        }
+        const decoded = jwt.verify(token, jwtKey);
+        console.log(decoded)
+        return successResponse(res,{
+            statusCode: 200,
+            message: "You're Account was register successfully!!",
+        }); 
+    } catch (error) {
+        
+        next(error)
+    }
+}
 
 
-
-
-module.exports = {processRegister, testController, getUsers, findUserById, deleteUser}
+module.exports = {processRegister, testController, getUsers, findUserById, deleteUser, activateUserAccount}
