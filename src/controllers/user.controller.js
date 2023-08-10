@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const createError = require("http-errors");
 const { createJSONWebToken } = require("../helper/jsonwebtoken");
 const { jwtKey, clientURL } = require("../config/secret");
+const sendEmailWithNodMailer = require("../helper/email");
 
 const testController = (req, res)=>{
     res.status(200).send({
@@ -120,6 +121,7 @@ const processRegister = async(req, res, next) =>{
                 <p>Click here to <a href="${clientURL}/api/users/activate/${token}" target="_blank">activate your account</a></p> 
             `
         }
+        sendEmailWithNodMailer(emailData)
         const token = createJSONWebToken({name, email, password, phone, address}, jwtKey, '10m')
         
         return successResponse(res,{
