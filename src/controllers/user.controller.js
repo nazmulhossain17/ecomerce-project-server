@@ -112,6 +112,14 @@ const processRegister = async(req, res, next) =>{
         if(userExists){
             throw createError(409, 'User email already exists')
         }
+        const emailData = {
+            email,
+            subject: 'Active Your Account',
+            html: `
+                <h2>Hello ${name}!!</h2>
+                <p>Click here to activate </p> 
+            `
+        }
         const token = createJSONWebToken({name, email, password, phone, address}, jwtKey, '10m')
         
         return successResponse(res,{
