@@ -121,15 +121,15 @@ const processRegister = async(req, res, next) =>{
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create the user
-        const newUser = new User({
-            name,
-            email,
-            password: hashedPassword,
-            phone,
-            address
-        });
+        // const newUser = new User({
+        //     name,
+        //     email,
+        //     password: hashedPassword,
+        //     phone,
+        //     address
+        // });
 
-        await newUser.save();
+        // await newUser.save();
 
         // Generate token after creating the user
         const token = createJSONWebToken(
@@ -171,13 +171,20 @@ const activateUserAccount = async(req, res, next) =>{
             throw createError(404, 'Token not found')
         }
         const decoded = jwt.verify(token, jwtKey);
-        console.log(decoded)
+        if(!decoded){
+            throw createError(401, 'Unable to verify user');
+        }
+        const userExists = await User.exists({ email: decoded.email });
+        if (userExists) {
+            throw createError(409, 'User email already exists! please sign in');
+        }
+
+        await User.create(decoded)
         return successResponse(res,{
             statusCode: 200,
             message: "You're Account was register successfully!!",
         }); 
     } catch (error) {
-        
         next(error)
     }
 }
