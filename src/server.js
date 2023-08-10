@@ -1,12 +1,11 @@
 const mongoose= require("mongoose");
 const app = require("./app");
-require('dotenv').config()
+const { dbURL } = require("./config/secret");
 const port = 3001;
-const URL = process.env.DB_URL
 
 const connectDB = async(req, res)=>{
     try {
-        await mongoose.connect(URL);
+        await mongoose.connect(dbURL);
         console.log('Database Connected!');
         app.listen(port, ()=>{
             console.log(`Server running on PORT ${port}`)

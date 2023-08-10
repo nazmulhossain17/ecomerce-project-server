@@ -17,7 +17,7 @@ const data = {
         phone: '12343678901', 
         isAdmin: false,
         isBanned: false
-        },
+        }, 
     ]
 }
 
