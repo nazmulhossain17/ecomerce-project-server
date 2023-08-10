@@ -5,7 +5,7 @@ const { successResponse } = require("./response.controller");
 const mongoose = require('mongoose');
 const createError = require("http-errors");
 const { createJSONWebToken } = require("../helper/jsonwebtoken");
-const { jwtKey } = require("../config/secret");
+const { jwtKey, clientURL } = require("../config/secret");
 
 const testController = (req, res)=>{
     res.status(200).send({
@@ -116,8 +116,8 @@ const processRegister = async(req, res, next) =>{
             email,
             subject: 'Active Your Account',
             html: `
-                <h2>Hello ${name}!!</h2>
-                <p>Click here to activate </p> 
+                <h2>Hello ${name}!!</h2> 
+                <p>Click here to <a href="${clientURL}/api/users/activate/${token}" target="_blank">activate your account</a></p> 
             `
         }
         const token = createJSONWebToken({name, email, password, phone, address}, jwtKey, '10m')
