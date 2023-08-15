@@ -1,4 +1,5 @@
 const multer = require("multer");
+const path = require("path"); // Add this line to import the 'path' module
 const { uploadFile } = require("../config/secret");
 
 const storage = multer.diskStorage({
@@ -6,8 +7,11 @@ const storage = multer.diskStorage({
     cb(null, uploadFile);
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix);
+    const extname = path.extname(file.originalname);
+    cb(
+      null,
+      Date.now() + "-" + file.originalname.replace(extname, "") + extname
+    );
   },
 });
 
