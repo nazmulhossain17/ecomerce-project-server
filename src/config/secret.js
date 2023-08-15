@@ -6,6 +6,8 @@ const jwtKey = process.env.JWT_AC_KEY;
 const dbURL = process.env.DB_URL;
 const clientURL = process.env.CLIENT_URL;
 const uploadFile = process.env.UPLOAD_FILE;
+const fileSize = process.env.MAX_FILE_SIZE;
+const fileType = process.env.FILE_TYPES;
 
 module.exports = {
   smtpuser,
@@ -14,4 +16,6 @@ module.exports = {
   dbURL,
   clientURL,
   uploadFile,
+  fileSize,
+  fileType,
 };
