@@ -1,10 +1,17 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const smtpuser = process.env.SMTP_USERNAME;
 const smtppassword = process.env.SMTP_PASSWORD;
 const jwtKey = process.env.JWT_AC_KEY;
 const dbURL = process.env.DB_URL;
 const clientURL = process.env.CLIENT_URL;
+const uploadFile = process.env.UPLOAD_FILE;
 
-
-module.exports = {smtpuser, smtppassword, jwtKey, dbURL, clientURL}
+module.exports = {
+  smtpuser,
+  smtppassword,
+  jwtKey,
+  dbURL,
+  clientURL,
+  uploadFile,
+};
