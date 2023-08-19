@@ -5,7 +5,7 @@ const smtppassword = process.env.SMTP_PASSWORD;
 const jwtKey = process.env.JWT_AC_KEY;
 const dbURL = process.env.DB_URL;
 const clientURL = process.env.CLIENT_URL;
-const uploadFile = process.env.UPLOAD_FILE;
+const uploadFile = process.env.UPLOAD_PATH;
 const fileSize = process.env.MAX_FILE_SIZE;
 const fileType = process.env.FILE_TYPES;
 
