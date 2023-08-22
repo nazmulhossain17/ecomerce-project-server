@@ -1,59 +1,66 @@
 const { Schema, model } = require("mongoose");
-const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     name: {
-        type: String,
-        required: [true, 'User name is required'],
-        trim: true,
-        maxlength: [31, 'User name can be maximum 25 characters'],
-        minlength: [4, 'User name can be minimum 4 characters'],
+      type: String,
+      required: [true, "User name is required"],
+      trim: true,
+      maxlength: [31, "User name can be maximum 25 characters"],
+      minlength: [4, "User name can be minimum 4 characters"],
     },
     email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        validate: {
-            validator: function(v){
-                return  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(v)
-            },
-            message: 'Please enter a valid email'
-        }
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      validate: {
+        validator: function (v) {
+          return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+            v
+          );
+        },
+        message: "Please enter a valid email",
+      },
     },
     password: {
-        type: String,
-        required: [true, 'Password is required'],
-        minlength: [8, 'Password length can be minimum 8 characters'],
-        set: (v)=> bcrypt.hashSync(v, bcrypt.genSaltSync(10))
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [8, "Password length can be minimum 8 characters"],
+      set: (v) => bcrypt.hashSync(v, bcrypt.genSaltSync(10)),
     },
     image: {
-        type: String,
+      type: Buffer,
+      contentType: String,
+      required: [true, "Image is required"],
     },
     address: {
-        type: String,
-        required: [true, 'Address is required'],
+      type: String,
+      required: [true, "Address is required"],
     },
     phone: {
-        type: String,
-        validate: {
-            validator: function(v) {
-              return /^\d{11}$/.test(v);
-            },
-            message: props => `${props.value} is not a valid phone number!`
-          },
-        required: [true, 'Phone number required'],
+      type: String,
+      validate: {
+        validator: function (v) {
+          return /^\d{11}$/.test(v);
+        },
+        message: (props) => `${props.value} is not a valid phone number!`,
+      },
+      required: [true, "Phone number required"],
     },
     isAdmin: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     isBanned: {
-        type: Boolean,
-        default: false
-    }
-}, {timestamps: true});
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
 
-const User = model('Users', userSchema);
+const User = model("Users", userSchema);
 
 module.exports = User;

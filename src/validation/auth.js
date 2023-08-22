@@ -31,6 +31,14 @@ const validateUserRegister = [
     .withMessage("Address is required"),
   body("phone").trim().notEmpty().withMessage("Phone Number is required"),
   body("image").optional().isString().withMessage("Image is required"),
+  body("image")
+    .custom((value, { req }) => {
+      if (!req.file || !req.file.buffer) {
+        throw new Error("Image is required");
+      }
+      return true;
+    })
+    .withMessage("Image is required"),
 ];
 
 module.exports = { validateUserRegister };

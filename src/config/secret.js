@@ -8,6 +8,8 @@ const clientURL = process.env.CLIENT_URL;
 const uploadFile = process.env.UPLOAD_PATH;
 const fileSize = process.env.MAX_FILE_SIZE;
 const fileType = process.env.FILE_TYPES;
+const maxFileSize = process.env.FILE_TYPES;
+const allowedFile = process.env.FILE_TYPES;
 
 module.exports = {
   smtpuser,
@@ -18,4 +20,6 @@ module.exports = {
   uploadFile,
   fileSize,
   fileType,
+  maxFileSize,
+  allowedFile,
 };
