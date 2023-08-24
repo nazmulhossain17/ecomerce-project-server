@@ -10,6 +10,7 @@ const fileSize = process.env.MAX_FILE_SIZE;
 const fileType = process.env.FILE_TYPES;
 const maxFileSize = process.env.FILE_TYPES;
 const allowedFile = process.env.FILE_TYPES;
+const jwtAccessKey = process.env.JWT_ACCESS_KEY;
 
 module.exports = {
   smtpuser,
@@ -22,4 +23,5 @@ module.exports = {
   fileType,
   maxFileSize,
   allowedFile,
+  jwtAccessKey,
 };
