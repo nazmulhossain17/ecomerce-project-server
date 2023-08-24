@@ -6,6 +6,7 @@ const {
   deleteUser,
   processRegister,
   activateUserAccount,
+  updateUser,
 } = require("../controllers/user.controller");
 const upload = require("../middlewares/uploadFiles");
 const { validateUserRegister } = require("../validation/auth");
@@ -25,5 +26,6 @@ router.post(
 router.post("/api/verify", activateUserAccount);
 router.get("/:id", findUserById);
 router.delete("/:id", deleteUser);
+router.put("/:id", upload.single("image"), updateUser);
 
 module.exports = router;

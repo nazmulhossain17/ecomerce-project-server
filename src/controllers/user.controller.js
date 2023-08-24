@@ -109,7 +109,17 @@ const processRegister = async (req, res, next) => {
   try {
     const { name, email, password, phone, address } = req.body;
 
-    const imageBufferString = req.file.buffer.toString("base64");
+    const image = req.file;
+    if (!image) {
+      throw createError(400, "Image file is required");
+    }
+    console.log(image);
+
+    if (image.size > 1024 * 1024 * 2) {
+      throw createError(400, "File is too large less then 2MB");
+    }
+
+    const imageBufferString = image.buffer.toString("base64");
 
     // Check if user already exists
     const userExists = await User.exists({ email: email });
@@ -189,6 +199,63 @@ const activateUserAccount = async (req, res, next) => {
   }
 };
 
+const updateUser = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const options = { password: 0 };
+    await findUserId(User, userId, options);
+    const updateOptions = { new: true, runValidators: true, context: "query" };
+    let updates = {};
+
+    // if (req.body.name) {
+    //   updates.name = req.body.name;
+    // }
+    // if (req.body.password) {
+    //   updates.password = req.body.password;
+    // }
+    // if (req.body.phone) {
+    //   updates.phone = req.body.phone;
+    // }
+    // if (req.body.address) {
+    //   updates.address = req.body.address;
+    // }
+
+    for (let key in req.body) {
+      if (["name", "password", "phone", "address"].includes(key)) {
+        updates[key] = req.body[key];
+      } else if (["email"].includes(key)) {
+        throw new Error("Email can not be updated");
+      }
+    }
+    const image = req.file;
+    if (image) {
+      if (image.size > 1024 * 1024 * 2) {
+        throw new Error("File is too large less then 2MB");
+      }
+      updates.image = image.buffer.toString("base64");
+    }
+
+    // delete updates.email;
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updates,
+      updateOptions
+    ).select("-password");
+
+    if (!updatedUser) {
+      throw createError(404, "User with this id does not exists");
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "user was updated successfully",
+      payload: updateUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   processRegister,
   testController,
@@ -196,4 +263,5 @@ module.exports = {
   findUserById,
   deleteUser,
   activateUserAccount,
+  updateUser,
 };
